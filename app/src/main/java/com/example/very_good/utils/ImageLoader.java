@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.client.app.Constants;
-import com.client.app.MyApp;
+import com.example.very_good.app.Constants;
+import com.example.very_good.app.MyApp;
 
 public class ImageLoader {
 

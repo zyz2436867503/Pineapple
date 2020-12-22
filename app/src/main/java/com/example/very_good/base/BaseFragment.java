@@ -11,8 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.client.interfaces.IBasePresenter;
-import com.client.interfaces.IBaseView;
+
+import com.example.very_good.interfaces.IBasePresenter;
+import com.example.very_good.interfaces.IBaseView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -43,7 +44,7 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(mContext,view);
+        unbinder = ButterKnife.bind(this,view);
         presenter = createPrenter();
         if(presenter != null){
             presenter.attachView(this);

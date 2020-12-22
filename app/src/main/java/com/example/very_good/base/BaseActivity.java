@@ -6,8 +6,9 @@ import android.os.Looper;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.client.interfaces.IBasePresenter;
-import com.client.interfaces.IBaseView;
+
+import com.example.very_good.interfaces.IBasePresenter;
+import com.example.very_good.interfaces.IBaseView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;

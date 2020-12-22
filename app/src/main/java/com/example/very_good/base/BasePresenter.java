@@ -1,7 +1,9 @@
 package com.example.very_good.base;
 
-import com.client.interfaces.IBasePresenter;
-import com.client.interfaces.IBaseView;
+
+
+import com.example.very_good.interfaces.IBasePresenter;
+import com.example.very_good.interfaces.IBaseView;
 
 import java.lang.ref.WeakReference;
 

@@ -23,10 +23,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HttpManager {
     private static HttpManager instance;
 
-    public  static HttpManager getInstance(){
-        if(instance == null){
-            synchronized(HttpManager.class){
-                if(instance == null){
+    public static HttpManager getInstance() {
+        if (instance == null) {
+            synchronized (HttpManager.class) {
+                if (instance == null) {
                     instance = new HttpManager();
                 }
             }
@@ -37,7 +37,7 @@ public class HttpManager {
     private ServiceApi serviceApi;
 
 
-    private Retrofit getRetrofit(String url){
+    private Retrofit getRetrofit(String url) {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(url)
                 .client(getOkHttpClient())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -46,10 +46,10 @@ public class HttpManager {
         return retrofit;
     }
 
-    private OkHttpClient getOkHttpClient(){
+    private OkHttpClient getOkHttpClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60,TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
                 .addInterceptor(new LoggingInterceptor())
                 .addInterceptor(new HeaderInterceptor())
                 .build();
@@ -63,7 +63,7 @@ public class HttpManager {
             Request request = chain.request();
             Response response = chain.proceed(request);
             ResponseBody responseBody = response.peekBody(Integer.MAX_VALUE);
-            Log.i("responseBody",responseBody.string());
+            Log.i("responseBody", responseBody.string());
             return chain.proceed(request);
         }
     }
@@ -71,12 +71,12 @@ public class HttpManager {
     /**
      * 拦截的头处理
      */
-    static class HeaderInterceptor implements Interceptor{
+    static class HeaderInterceptor implements Interceptor {
 
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request request = chain.request().newBuilder()
-                    .addHeader("Authorization","APPCODE 964e16aa1ae944e9828e87b8b9fbd30a")
+                    .addHeader("Authorization", "APPCODE 964e16aa1ae944e9828e87b8b9fbd30a")
                     .build();
             return chain.proceed(request);
         }
@@ -84,11 +84,12 @@ public class HttpManager {
 
     /**
      * ServiceApi
+     *
      * @return
      */
-    public ServiceApi getService(){
-        if(serviceApi == null){
-            serviceApi = getRetrofit(ServiceApi.BASE_URL).create(ServiceApi.class);
+    public ServiceApi getService() {
+        if (serviceApi == null) {
+            serviceApi = getRetrofit(ServiceApi.Home_URL).create(ServiceApi.class);
         }
         return serviceApi;
     }

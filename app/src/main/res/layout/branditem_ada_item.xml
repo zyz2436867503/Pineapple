@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <ImageView
+        android:id="@+id/iv_branditem_home"
+        android:layout_width="@dimen/dp_200"
+        android:layout_height="@dimen/dp_200"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_brandnew_home"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/dp_20"
+        android:text="15616"
+        app:layout_constraintRight_toRightOf="@id/iv_branditem_home"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="@id/iv_branditem_home"
+        app:layout_constraintTop_toBottomOf="@id/iv_branditem_home" />
+
+    <TextView
+        android:id="@+id/tv_brandprice_home"
+        android:layout_width="wrap_content"
+        android:textColor="#CD1111"
+        android:text="15616"
+        android:textSize="@dimen/dp_18"
+        app:layout_constraintRight_toRightOf="@id/iv_branditem_home"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintLeft_toLeftOf="@id/iv_branditem_home"
+        app:layout_constraintTop_toBottomOf="@id/tv_brandnew_home" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
