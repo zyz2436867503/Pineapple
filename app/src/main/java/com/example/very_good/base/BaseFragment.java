@@ -1,6 +1,7 @@
 package com.example.very_good.base;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.very_good.interfaces.IBasePresenter;
 import com.example.very_good.interfaces.IBaseView;
+import com.example.very_good.ui.login.LoginActivity;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -32,10 +34,10 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
         mActivity = getActivity();
         int layout = getLayout();
         View view = null;
-        if(layout <= 0){
+        if (layout <= 0) {
             new RuntimeException("布局非法");
-        }else{
-           view = inflater.inflate(layout,container,false);
+        } else {
+            view = inflater.inflate(layout, container, false);
         }
 
         return view;
@@ -44,9 +46,9 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        unbinder = ButterKnife.bind(this,view);
+        unbinder = ButterKnife.bind(this, view);
         presenter = createPrenter();
-        if(presenter != null){
+        if (presenter != null) {
             presenter.attachView(this);
         }
         initView();
@@ -54,9 +56,12 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
     }
 
     protected abstract int getLayout();
+
     protected abstract P createPrenter();
+
     protected abstract void initView();
-    protected abstract  void initData();
+
+    protected abstract void initData();
 
     @Override
     public void showLoading(int visible) {
@@ -68,13 +73,15 @@ public abstract class BaseFragment<P extends IBasePresenter> extends Fragment im
 
     }
 
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(unbinder != null){
+        if (unbinder != null) {
             unbinder.unbind();
         }
-        if(presenter != null){
+        if (presenter != null) {
             presenter.unAttachView();
         }
         mActivity = null;

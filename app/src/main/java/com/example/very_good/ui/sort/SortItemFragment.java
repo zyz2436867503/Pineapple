@@ -12,7 +12,6 @@ import com.example.very_good.base.BaseFragment;
 import com.example.very_good.bean.sort.Sort_Data_InfoBean;
 import com.example.very_good.interfaces.sort.ISortDataInfo;
 import com.example.very_good.presenter.home.sort.SortDataInfoPresenter;
-import com.example.very_good.ui.adpter.SmallAdapter;
 import com.example.very_good.ui.adpter.sort.SortItemAdapter;
 
 import java.util.ArrayList;

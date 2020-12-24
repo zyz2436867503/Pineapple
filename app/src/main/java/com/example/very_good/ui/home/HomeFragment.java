@@ -105,27 +105,34 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
             InitHotGoods(homeBean.getData().getHotGoodsList());
             InitTopic(homeBean.getData().getTopicList());
             InitCate(homeBean.getData().getCategoryList());
+        }else {
+            Log.i("TAG", "getHomeReturn: "+"空了");
         }
     }
 
     private void InitCate(List<HomeBean.DataBean.CategoryListBean> categoryList) {
-        ryLiveCate.setLayoutManager(new LinearLayoutManager(getActivity()));
-        cateList = new ArrayList<>();
-        cateAdaper = new CateAdaper(getActivity(), cateList);
-        cateList.addAll(categoryList);
-        ryLiveCate.setAdapter(cateAdaper);
-        cateAdaper.notifyDataSetChanged();
+        if (categoryList!=null&&categoryList.size()>0){
+            ryLiveCate.setLayoutManager(new LinearLayoutManager(getActivity()));
+            cateList = new ArrayList<>();
+            cateAdaper = new CateAdaper(getActivity(), cateList);
+            cateList.addAll(categoryList);
+            ryLiveCate.setAdapter(cateAdaper);
+            cateAdaper.notifyDataSetChanged();
 
-        cateAdaper.addListClick(new BaseAdapter.IListClick() {
-            @Override
-            public void itemClick(int pos) {
-                Intent intent = new Intent(getActivity(), LiveItemActivity.class);
-                int id = categoryList.get(pos).getGoodsList().get(pos).getId();
-                Log.i("TAG", "itemClick: "+id);
-                intent.putExtra("id", categoryList.get(pos).getGoodsList().get(pos).getId());
-                startActivity(intent);
-            }
-        });
+            cateAdaper.addListClick(new BaseAdapter.IListClick() {
+                @Override
+                public void itemClick(int pos) {
+                    Intent intent = new Intent(getActivity(), LiveItemActivity.class);
+                    int id = categoryList.get(pos).getGoodsList().get(pos).getId();
+                    Log.i("TAG", "itemClick: "+id);
+                    intent.putExtra("id", categoryList.get(pos).getGoodsList().get(pos).getId());
+                    startActivity(intent);
+                }
+            });
+        }else {
+            Log.i("TAG", "InitCate: "+"listnull");
+        }
+
     }
 
     private void InitTopic(List<HomeBean.DataBean.TopicListBean> topicList) {

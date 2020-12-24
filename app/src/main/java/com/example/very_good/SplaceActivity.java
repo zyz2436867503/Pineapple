@@ -8,7 +8,7 @@ import com.example.very_good.interfaces.IBasePresenter;
 public abstract class SplaceActivity extends BaseActivity {
     @Override
     protected int getLayout() {
-        return R.layout.splace_item;
+        return R.layout.shopping_fragment;
     }
 
     @Override
@@ -18,7 +18,7 @@ public abstract class SplaceActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        startActivity(new Intent(SplaceActivity.this,MainActivity.class));
+//        startActivity(new Intent(SplaceActivity.this,MainActivity.class));
     }
 
     @Override
