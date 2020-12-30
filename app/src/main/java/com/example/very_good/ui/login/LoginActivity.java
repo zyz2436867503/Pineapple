@@ -10,9 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.very_good.R;
+import com.example.very_good.RegisterActivity;
 import com.example.very_good.base.BaseActivity;
 import com.example.very_good.bean.login.LoginBean;
 import com.example.very_good.interfaces.login.ILogin;
@@ -36,6 +38,10 @@ public class LoginActivity extends BaseActivity<ILogin.Presenter> implements ILo
     Button btnLogin;
     String register_token;
     String register_username;
+    @BindView(R.id.me_login_regist)
+    TextView meLoginRegist;
+    @BindView(R.id.me_login_forget_psd)
+    TextView meLoginForgetPsd;
     private String token;
 
     @Override
@@ -50,11 +56,19 @@ public class LoginActivity extends BaseActivity<ILogin.Presenter> implements ILo
 
     @Override
     protected void initView() {
+
         imgPw.setTag(1);
         Intent intent = getIntent();
         register_token = intent.getStringExtra("register_token");
         register_username = intent.getStringExtra("register_username");
 
+
+        meLoginRegist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            }
+        });
     }
 
     @Override

@@ -2,22 +2,32 @@ package com.example.very_good.bean.register;
 
 public class RegisterBean {
 
-    /**
-     * data : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGFhZWFjOGEtZDM3MC00MDNkLTllZGEtNTFkOTFhZWMxMzBkIiwiaWF0IjoxNjA4NjI1NjEwfQ.TBg4WCtuSPyFjLAKWu64WZXqLATt3qzUCYW93koCHHw","userInfo":{"avatar":"","birthday":0,"gender":0,"uid":"0aaeac8a-d370-403d-9eda-51d91aec130d","username":"lxy122"}}
-     * errmsg :
-     * errno : 0
-     */
 
-    private DataBean data;
-    private String errmsg;
-    private int errno;
-
-    public DataBean getData() {
-        return data;
+    @Override
+    public String toString() {
+        return "RegisterBean{" +
+                "errno=" + errno +
+                ", errmsg='" + errmsg + '\'' +
+                ", data=" + data +
+                '}';
     }
 
-    public void setData(DataBean data) {
-        this.data = data;
+    /**
+     * errno : 0
+     * errmsg :
+     * data : {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGE2MzE4ZDQtY2Q0OC00OTMzLTg5MjgtMWI2Y2MyM2E5ODhiIiwiaWF0IjoxNjA4Nzc5MTMwfQ.ZrTkBwafczFAeT5MNew5rOyDE65LGG_aI2LQXpcNZ0s","userInfo":{"uid":"0a6318d4-cd48-4933-8928-1b6cc23a988b","username":"zhang","nickname":null,"gender":0,"avatar":"","birthday":0}}
+     */
+
+    private int errno;
+    private String errmsg;
+    private DataBean data;
+
+    public int getErrno() {
+        return errno;
+    }
+
+    public void setErrno(int errno) {
+        this.errno = errno;
     }
 
     public String getErrmsg() {
@@ -28,18 +38,26 @@ public class RegisterBean {
         this.errmsg = errmsg;
     }
 
-    public int getErrno() {
-        return errno;
+    public DataBean getData() {
+        return data;
     }
 
-    public void setErrno(int errno) {
-        this.errno = errno;
+    public void setData(DataBean data) {
+        this.data = data;
     }
 
     public static class DataBean {
+        @Override
+        public String toString() {
+            return "DataBean{" +
+                    "token='" + token + '\'' +
+                    ", userInfo=" + userInfo +
+                    '}';
+        }
+
         /**
-         * token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGFhZWFjOGEtZDM3MC00MDNkLTllZGEtNTFkOTFhZWMxMzBkIiwiaWF0IjoxNjA4NjI1NjEwfQ.TBg4WCtuSPyFjLAKWu64WZXqLATt3qzUCYW93koCHHw
-         * userInfo : {"avatar":"","birthday":0,"gender":0,"uid":"0aaeac8a-d370-403d-9eda-51d91aec130d","username":"lxy122"}
+         * token : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGE2MzE4ZDQtY2Q0OC00OTMzLTg5MjgtMWI2Y2MyM2E5ODhiIiwiaWF0IjoxNjA4Nzc5MTMwfQ.ZrTkBwafczFAeT5MNew5rOyDE65LGG_aI2LQXpcNZ0s
+         * userInfo : {"uid":"0a6318d4-cd48-4933-8928-1b6cc23a988b","username":"zhang","nickname":null,"gender":0,"avatar":"","birthday":0}
          */
 
         private String token;
@@ -63,42 +81,20 @@ public class RegisterBean {
 
         public static class UserInfoBean {
             /**
+             * uid : 0a6318d4-cd48-4933-8928-1b6cc23a988b
+             * username : zhang
+             * nickname : null
+             * gender : 0
              * avatar :
              * birthday : 0
-             * gender : 0
-             * uid : 0aaeac8a-d370-403d-9eda-51d91aec130d
-             * username : lxy122
              */
 
-            private String avatar;
-            private int birthday;
-            private int gender;
             private String uid;
             private String username;
-
-            public String getAvatar() {
-                return avatar;
-            }
-
-            public void setAvatar(String avatar) {
-                this.avatar = avatar;
-            }
-
-            public int getBirthday() {
-                return birthday;
-            }
-
-            public void setBirthday(int birthday) {
-                this.birthday = birthday;
-            }
-
-            public int getGender() {
-                return gender;
-            }
-
-            public void setGender(int gender) {
-                this.gender = gender;
-            }
+            private Object nickname;
+            private int gender;
+            private String avatar;
+            private int birthday;
 
             public String getUid() {
                 return uid;
@@ -114,6 +110,38 @@ public class RegisterBean {
 
             public void setUsername(String username) {
                 this.username = username;
+            }
+
+            public Object getNickname() {
+                return nickname;
+            }
+
+            public void setNickname(Object nickname) {
+                this.nickname = nickname;
+            }
+
+            public int getGender() {
+                return gender;
+            }
+
+            public void setGender(int gender) {
+                this.gender = gender;
+            }
+
+            public String getAvatar() {
+                return avatar;
+            }
+
+            public void setAvatar(String avatar) {
+                this.avatar = avatar;
+            }
+
+            public int getBirthday() {
+                return birthday;
+            }
+
+            public void setBirthday(int birthday) {
+                this.birthday = birthday;
             }
         }
     }

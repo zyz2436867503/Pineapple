@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'realm-android'
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -12,6 +12,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -21,11 +23,19 @@ android {
         }
     }
 
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dexOptions {
+        dexInProcess true
+        preDexLibraries true
+        javaMaxHeapSize "6g"
+    }
+
 }
+
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -50,22 +60,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.7'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
-    /*//um
-    implementation "com.umeng.umsdk:common:9.1.0"
-    implementation "com.umeng.umsdk:asms:1.1.3" // asms包依赖(必选)
-    implementation "com.umeng.umsdk:crash:0.0.4" // native crash包依赖(必选)*/
-
-    /*implementation  'com.umeng.umsdk:share-core:7.0.2'
-    implementation  'com.umeng.umsdk:share-board:7.0.2'
-    implementation  'com.umeng.umsdk:share-wx:7.0.2'*/
-    //三方分享平台 其他不包括的需要jar包实现
-    /*implementation  'com.umeng.umsdk:share-qq:7.0.2'
-
-    implementation  'com.umeng.umsdk:share-sina:7.0.2'
-    implementation  'com.umeng.umsdk:share-alipay:7.0.2'
-    implementation  'com.umeng.umsdk:share-dingding:7.0.2'
-
-*/
 
     //banner
     implementation 'com.youth.banner:banner:1.4.9'
@@ -74,28 +68,17 @@ dependencies {
 
     implementation 'com.jaeger.ninegridimageview:library:1.0.2'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
-    /*//本地相机相册选择图片
-    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'*/
 
 
-    //极光
-    //implementation(name: 'com.heytap.msp-push-2.1.0', ext: 'aar')
-    //
-    //implementation(name:'BaiduLBS_AndroidSDK_Lib',ext: 'aar')
-
-    //compileOnly files('libs/BaiduLBS_Android.jar')
-
-
-    //环信
-    // Google firebase cloud messaging
-    /*implementation 'com.google.android.gms:play-services-base:11.4.0'
-    implementation 'com.google.firebase:firebase-messaging:11.4.0'
-    api 'com.hyphenate:hyphenate-sdk:3.6.8'*/
+    //本地相机相册选择图片
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.3'
+    implementation 'com.android.support:multidex:1.0.3'
 
     //oss
     implementation 'com.aliyun.dpa:oss-android-sdk:+'
 
-
+    //侧滑
+    compile 'com.yanzhenjie:recyclerview-swipe:1.1.4'
     //垂直的tablayout
     implementation 'q.rorbin:VerticalTabLayout:1.2.5'
 

@@ -133,6 +133,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/tv_discuss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_20"
@@ -193,11 +194,10 @@
 
                 <TextView
                     android:id="@+id/tv_category_info_comment_head_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="394dp"
+                    android:layout_height="34dp"
                     android:layout_marginLeft="@dimen/dp_20"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:layout_marginRight="@dimen/dp_30"
                     android:text="nuldkjasfaoif发布IE部分看见啥DNF奥斯福呢就是否能爱哦翻就开始放你博FB那l"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_category_info_comment_head_img" />
@@ -246,12 +246,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <WebView
-                    android:id="@+id/webView_category"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <androidx.recyclerview.widget.RecyclerView
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="WebViewLayout" />
+                    android:id="@+id/mRlv_category_bigimage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </androidx.constraintlayout.widget.ConstraintLayout>
             <!--商品常见问题区域-->
             <LinearLayout

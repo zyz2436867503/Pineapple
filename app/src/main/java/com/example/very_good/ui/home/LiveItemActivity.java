@@ -2,6 +2,7 @@ package com.example.very_good.ui.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -23,13 +24,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.very_good.R;
 import com.example.very_good.base.BaseActivity;
+import com.example.very_good.base.BaseAdapter;
 import com.example.very_good.bean.CategoryBean;
 import com.example.very_good.bean.CategoryBottomInfoBean;
 import com.example.very_good.interfaces.home.ICategory;
 import com.example.very_good.presenter.home.CatePre;
+import com.example.very_good.ui.adpter.CategoryBigImageAdapter;
 import com.example.very_good.ui.adpter.CategoryButtomInfoAdapter;
 import com.example.very_good.ui.adpter.CategoryIssueAdapter;
 import com.example.very_good.ui.adpter.CategoryParameterAdapter;
+import com.example.very_good.ui.collection.Favorites;
+import com.example.very_good.ui.collection.Realms;
+import com.example.very_good.ui.discuss.DiscussActivity;
+import com.example.very_good.ui.home.big.BigImageActivity;
 import com.example.very_good.ui.login.LoginActivity;
 import com.example.very_good.utils.SpUtils;
 import com.youth.banner.Banner;
@@ -39,14 +46,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.realm.Realm;
 
 
 public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> implements ICategory.CateView {
-    @BindView(R.id.webView_category)
-    WebView webView;
+    /* @BindView(R.id.webView_category)
+     WebView webView;*/
     @BindView(R.id.mRlv_category_all)
     RecyclerView mRlv_all;//底部列表数据
     @BindView(R.id.mRlv_category_issue)
@@ -74,6 +84,12 @@ public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> impl
     ImageView iv_head_img;
     @BindView(R.id.iv_category_info_comment_img)
     ImageView iv_img;
+    @BindView(R.id.mRlv_category_bigimage)
+    RecyclerView mRlv_bigimage;//图片
+    @BindView(R.id.img_collect)
+    ImageView iv_Collect;
+    @BindView(R.id.tv_discuss)
+    TextView tvdiscuss;
 
     private String h5 = "<html>\n" +
             "            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n" +
@@ -156,6 +172,16 @@ public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> impl
         mRlv_all.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         categoryButtomInfoAdapter = new CategoryButtomInfoAdapter(this, goodsList);
         mRlv_all.setAdapter(categoryButtomInfoAdapter);
+
+        categoryButtomInfoAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                Intent intent = new Intent(LiveItemActivity.this, LiveItemActivity.class);
+                int id = goodsList.get(pos).getId();
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     //TODO 常见问题布局
@@ -179,11 +205,12 @@ public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> impl
         }
     }
 
-    @OnClick({R.id.fl_collect, R.id.fl_car, R.id.tv_category_buy, R.id.tv_category_addCar})
+    @OnClick({R.id.fl_collect, R.id.fl_car, R.id.tv_category_buy, R.id.tv_category_addCar,R.id.tv_discuss})
     public void onClick(View view) {
         if (!TextUtils.isEmpty(SpUtils.getInstance().getString("token"))) {
             switch (view.getId()) {
                 case R.id.fl_collect:
+                    initCollect();
                     break;
                 case R.id.fl_car:
 
@@ -199,11 +226,34 @@ public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> impl
                         initPopu_ok();//添加成功关闭弹窗
                     }
                     break;
+                case R.id.tv_discuss:
+                    startActivity(new Intent(LiveItemActivity.this, DiscussActivity.class));
+                    break;
+
             }
         } else {
             Intent i = new Intent(LiveItemActivity.this, LoginActivity.class);
             startActivity(i);
         }
+    }
+
+
+    private void initCollect() {
+        iv_Collect.setImageResource(R.mipmap.ff2);
+
+        //添加数据库
+        Realms.getRealm(LiveItemActivity.this).executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                Favorites favorites = realm.createObject(Favorites.class);
+                favorites.setName(info.getName());
+                favorites.setPic(info.getList_pic_url());
+                favorites.setPrice(info.getRetail_price());
+                favorites.setTitle(info.getGoods_brief());
+
+                Log.e("TAG", "execute: " + info.getName() + info.getList_pic_url());
+            }
+        });
     }
 
     //TODO 添加成功关闭弹窗
@@ -324,8 +374,74 @@ public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> impl
             initGoodDetail(result.getData().getInfo().getGoods_desc());
             //商品参数
             initParameter(result.getData().getAttribute());
+
+            //展示goods_desc
+            showImage(result.getData().getInfo().getGoods_desc());
         }
     }
+
+    //TODO H5展示图片 大图
+    private void showImage(String goods_desc) {
+        ArrayList<String> listUrl = new ArrayList<>();
+        String img = "<img[\\s\\S]*?>";
+        Pattern pattern = Pattern.compile(img);
+        Matcher matcher = pattern.matcher(goods_desc);
+
+        while (matcher.find()) {
+            String word = matcher.group();
+            int start = word.indexOf("\"") + 1;
+            int end = word.indexOf(".jpg");
+            if (end > 0) {//如果是jpg格式的就截取jpg
+                String url = word.substring(start, end);
+                if (url != null) {
+                    url = url + ".jpg";
+                    listUrl.add(url);
+                } else {
+                    return;
+                }
+            } else {
+                int end1 = word.indexOf(".png");//如果是png格式的就截取png
+                String url = word.substring(start, end1);
+                if (url != null) {
+                    url = url + ".png";
+                    listUrl.add(url);
+                } else {
+                    return;
+                }
+            }
+        }
+
+        mRlv_bigimage.setLayoutManager(new LinearLayoutManager(this));
+        CategoryBigImageAdapter categoryBigImageAdapter = new CategoryBigImageAdapter(this, listUrl);
+        mRlv_bigimage.setAdapter(categoryBigImageAdapter);
+
+        //点击条目跳转
+        categoryBigImageAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                Intent intent = new Intent(LiveItemActivity.this, BigImageActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("image", listUrl);
+                bundle.putInt("postion", pos);//点击哪个就传哪个下标
+                intent.putExtra("bundle", bundle);
+                startActivity(intent);
+            }
+        });
+
+//        LinearLayout id = findViewById(R.id.home__detail_info_30_ll);
+//        id.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bundle bundle = new Bundle();
+//                bundle.putStringArrayList("image",listUrl);
+//                Intent intent = new Intent(CategoryActivity.this, BigImageActivity.class);
+//                intent.putExtra("bundle", bundle);
+//                startActivity(intent);
+//            }
+//        });
+
+    }
+
 
     //TODO 商品参数数据
     private void initParameter(List<CategoryBean.DataBeanX.AttributeBean> attribute) {
@@ -337,7 +453,7 @@ public class LiveItemActivity extends BaseActivity<ICategory.CatePersenter> impl
     private void initGoodDetail(String webData) {
         String content = h5.replace("word", webData);
         Log.i("TAG", content);
-        webView.loadDataWithBaseURL("about:blank", content, "text/html", "utf-8", null);
+        //  webView.loadDataWithBaseURL("about:blank", content, "text/html", "utf-8", null);
 
 
     }

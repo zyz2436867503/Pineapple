@@ -11,7 +11,9 @@ import com.example.very_good.bean.HomeBean;
 import com.example.very_good.bean.ChannelBean;
 import com.example.very_good.bean.NewListBean;
 import com.example.very_good.bean.NewTopBean;
+import com.example.very_good.bean.address.AddressCityBean;
 import com.example.very_good.bean.login.LoginBean;
+import com.example.very_good.bean.mine.UserInfoBean;
 import com.example.very_good.bean.register.RegisterBean;
 import com.example.very_good.bean.shop.AddShoppingCarBean;
 import com.example.very_good.bean.shop.DeleteShoppingCarBean;
@@ -20,6 +22,8 @@ import com.example.very_good.bean.shop.UpdateShoppingCarBean;
 import com.example.very_good.bean.sort.CatalogBean;
 import com.example.very_good.bean.sort.CateRightBean;
 import com.example.very_good.bean.sort.Sort_Data_InfoBean;
+import com.example.very_good.bean.topic.TopicBean;
+import com.example.very_good.bean.topic.TopicCommentBean;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +71,13 @@ public interface ServiceApi {
     //https://cdplay.cn/api/goods/list?brandId=1001000&page=1&size=1000
     @GET("/api/goods/list")
     Flowable<BrandItemBean> getBrandBigItem(@Query("brandId") int brandId, @Query("page") int page, @Query("size") int size);
+
+    //专题
+    @GET("topic/list")
+    Flowable<TopicBean> getTopic(@Query("page") int page);
+    //专题评论    valueId=314&typeId=1&size=5
+    @GET("comment/list")
+    Flowable<TopicCommentBean> getTopicComment(@Query("valueId")int valueId, @Query("typeId")int typeId, @Query("size")int size);
 
     //https://cdplay.cn/api/goods/hot
     @GET("api/goods/hot")
@@ -129,5 +140,13 @@ public interface ServiceApi {
     Flowable<DeleteShoppingCarBean> postDeleteShoppingCar(@Field("productIds") String productIds);
 
 
+    //用户信息更新
+    @POST("api/user/updateUserInfo")
+    Flowable<UserInfoBean> updateUserInfo(@FieldMap Map<String,String> map);
+
+
+    //获取地址
+    @GET("api/region/list")
+    Flowable<AddressCityBean> getAddressCity(@Query("parentId") int parentId);
 
 }

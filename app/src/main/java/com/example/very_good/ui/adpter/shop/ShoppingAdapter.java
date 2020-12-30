@@ -66,6 +66,7 @@ public class ShoppingAdapter extends BaseAdapter {
         Name.setText(bean.getGoods_name());
         Number.setText(String.valueOf(bean.getNumber()));
 
+        change.setNumber(bean.getNumber());
         change.addPage(R.layout.layout_number_change);
         change.addChangeNumber(new NumberSelect.ChangeNumber() {
             @Override

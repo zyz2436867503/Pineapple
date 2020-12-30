@@ -32,6 +32,7 @@ import com.example.very_good.ui.adpter.CateAdaper;
 import com.example.very_good.ui.adpter.HotAdapter;
 import com.example.very_good.ui.adpter.NewAdapter;
 import com.example.very_good.ui.adpter.TopAdapter;
+import com.example.very_good.ui.topic.Topic_CommentActivity;
 import com.example.very_good.utils.TxtUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.loader.ImageLoader;
@@ -105,13 +106,13 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
             InitHotGoods(homeBean.getData().getHotGoodsList());
             InitTopic(homeBean.getData().getTopicList());
             InitCate(homeBean.getData().getCategoryList());
-        }else {
-            Log.i("TAG", "getHomeReturn: "+"空了");
+        } else {
+            Log.i("TAG", "getHomeReturn: " + "空了");
         }
     }
 
     private void InitCate(List<HomeBean.DataBean.CategoryListBean> categoryList) {
-        if (categoryList!=null&&categoryList.size()>0){
+        if (categoryList != null && categoryList.size() > 0) {
             ryLiveCate.setLayoutManager(new LinearLayoutManager(getActivity()));
             cateList = new ArrayList<>();
             cateAdaper = new CateAdaper(getActivity(), cateList);
@@ -124,13 +125,13 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
                 public void itemClick(int pos) {
                     Intent intent = new Intent(getActivity(), LiveItemActivity.class);
                     int id = categoryList.get(pos).getGoodsList().get(pos).getId();
-                    Log.i("TAG", "itemClick: "+id);
+                    Log.i("TAG", "itemClick: " + id);
                     intent.putExtra("id", categoryList.get(pos).getGoodsList().get(pos).getId());
                     startActivity(intent);
                 }
             });
-        }else {
-            Log.i("TAG", "InitCate: "+"listnull");
+        } else {
+            Log.i("TAG", "InitCate: " + "listnull");
         }
 
     }
@@ -142,6 +143,17 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
         topList.addAll(topicList);
         ryTop.setAdapter(topAdapter);
         topAdapter.notifyDataSetChanged();
+
+        topAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                Intent intent = new Intent(mContext, Topic_CommentActivity.class);
+                int id = topicList.get(pos).getId();
+
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     private void InitHotGoods(List<HomeBean.DataBean.HotGoodsListBean> hotGoodsList) {
@@ -153,6 +165,16 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
         hotAdapter.notifyDataSetChanged();
         ryRen.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
+        hotAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                Intent intent = new Intent(mContext, LiveItemActivity.class);
+                int id = hotGoodsList.get(pos).getId();
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void InitNewGoods(List<HomeBean.DataBean.NewGoodsListBean> newGoodsList) {
@@ -162,6 +184,15 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
         ryZyZs.setAdapter(newAdapter);
         newGoods.addAll(newGoodsList);
         newAdapter.notifyDataSetChanged();
+        newAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                Intent intent = new Intent(mContext, LiveItemActivity.class);
+                int id = newGoodsList.get(pos).getId();
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -176,6 +207,15 @@ public class HomeFragment extends BaseFragment<Ihome.HomePresenter> implements I
         ryHome.setAdapter(brandAdapter);
         bList.addAll(brandList);
         brandAdapter.notifyDataSetChanged();
+        brandAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                int id = brandList.get(pos).getId();
+                Intent intent = new Intent(mContext, BrandItemActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     /**

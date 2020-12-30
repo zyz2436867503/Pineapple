@@ -48,6 +48,8 @@ public class NumberSelect extends LinearLayout implements View.OnClickListener{
         txtReduce = view.findViewById(R.id.txt_reduce);
         txtNumber = view.findViewById(R.id.txt_number);
         txtAdd = view.findViewById(R.id.txt_add);
+        txtReduce.setOnClickListener(this);
+        txtAdd.setOnClickListener(this);
         initTxtNumber();
     }
 

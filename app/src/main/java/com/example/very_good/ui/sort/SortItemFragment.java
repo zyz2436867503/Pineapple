@@ -1,5 +1,6 @@
 package com.example.very_good.ui.sort;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -8,11 +9,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.very_good.R;
+import com.example.very_good.base.BaseAdapter;
 import com.example.very_good.base.BaseFragment;
 import com.example.very_good.bean.sort.Sort_Data_InfoBean;
 import com.example.very_good.interfaces.sort.ISortDataInfo;
 import com.example.very_good.presenter.home.sort.SortDataInfoPresenter;
 import com.example.very_good.ui.adpter.sort.SortItemAdapter;
+import com.example.very_good.ui.home.LiveItemActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +77,16 @@ public class SortItemFragment extends BaseFragment<ISortDataInfo.Persenter> impl
         rySmall.setAdapter(sortItemAdapter);
         list.addAll(brotherCategory);
         sortItemAdapter.notifyDataSetChanged();
+
+        sortItemAdapter.addListClick(new BaseAdapter.IListClick() {
+            @Override
+            public void itemClick(int pos) {
+                Intent intent = new Intent(mContext, LiveItemActivity.class);
+                int id = result.getData().getBrotherCategory().get(pos).getId();
+                intent.putExtra("id", id);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

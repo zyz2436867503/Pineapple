@@ -8,15 +8,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.very_good.R;
+import com.example.very_good.app.MyApp;
 import com.example.very_good.base.BaseAdapter;
 import com.example.very_good.base.BaseFragment;
 import com.example.very_good.bean.shop.AddShoppingCarBean;
@@ -37,7 +36,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implements IShoppingCar.View,View.OnClickListener {
+public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implements IShoppingCar.View {
 
 
     @BindView(R.id.mRlv_Shopping_Car)
@@ -70,13 +69,51 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     @Override
     protected void initView() {
         initShopping();
+
+        tv_Edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeEdit();
+            }
+        });
+        cb_All.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("TAG", "checkboxall");
+                boolean bool = cb_All.isChecked();
+                if (isEdit) {
+                    updateGoodSelectStateEdit(!bool);
+                } else {
+                    updateGoodSelectStateOrder(!bool);
+                }
+            }
+        });
+        tv_Submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit();
+            }
+        });
     }
+
+    //懒加载
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            list.clear();
+            initData();
+            shoppingAdapter.notifyDataSetChanged();
+        }
+    }
+
     //TODO 初始化布局
     private void initShopping() {
         list = new ArrayList<>();
         mRlv_ShoppingCar.setLayoutManager(new LinearLayoutManager(getActivity()));
         shoppingAdapter = new ShoppingAdapter(getContext(), list);
         mRlv_ShoppingCar.setAdapter(shoppingAdapter);
+
 
         //监听条目元素点击的时候的接口回调
         shoppingAdapter.addItemViewClick(new BaseAdapter.IItemViewClick() {
@@ -107,11 +144,11 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
         shoppingAdapter.setUpdateItem(new ShoppingAdapter.UpdateItem() {
             @Override
             public void updateItemDate(ShoppingCarBean.DataBean.CartListBean data) {
-                Map<String,String> map = new HashMap<>();
-                map.put("goodsId",String.valueOf(data.getGoods_id()));
-                map.put("productId",String.valueOf(data.getProduct_id()));
-                map.put("id",String.valueOf(data.getId()));
-                map.put("number",String.valueOf(data.getNumber()));
+                Map<String, String> map = new HashMap<>();
+                map.put("goodsId", String.valueOf(data.getGoods_id()));
+                map.put("productId", String.valueOf(data.getProduct_id()));
+                map.put("id", String.valueOf(data.getId()));
+                map.put("number", String.valueOf(data.getNumber()));
 
                 //调用修改条目的方法
                 presenter.postUpdateShoppingCar(map);
@@ -130,7 +167,7 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
             //取出数值
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction("shu");
-            mContext.registerReceiver(receiver,intentFilter);//广播
+            mContext.registerReceiver(receiver, intentFilter);//广播
         } else {
             ActivityManagerUtils.startFragmentForResult(this, 100, LoginActivity.class);
         }
@@ -141,27 +178,27 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
         @Override
         public void onReceive(Context context, Intent intent) {
             //goodsId
-            int goodsId = intent.getIntExtra("goodsId",0);
+            int goodsId = intent.getIntExtra("goodsId", 0);
             //number
             String number = intent.getStringExtra("number");
             //productId
-            int productId = intent.getIntExtra("productId",0);
+            int productId = intent.getIntExtra("productId", 0);
 
-            Log.e("TAG", "onReceive:goodsId "+goodsId );
-            Log.e("TAG", "onReceive:number "+number );
-            Log.e("TAG", "onReceive:productId "+productId );
+            Log.e("TAG", "onReceive:goodsId " + goodsId);
+            Log.e("TAG", "onReceive:number " + number);
+            Log.e("TAG", "onReceive:productId " + productId);
             //请求数据
-            if(goodsId>0 && number!=null && productId>0){   //不为空
+            if (goodsId > 0 && number != null && productId > 0) {   //不为空
                 HashMap<String, String> map = new HashMap<>();
-                map.put("goodsId",String.valueOf(goodsId));
-                map.put("number",number);
-                map.put("productId",String.valueOf(productId));
+                map.put("goodsId", String.valueOf(goodsId));
+                map.put("number", number);
+                map.put("productId", String.valueOf(productId));
 
                 presenter.AddShoppingCar(map);//添加购物车
 
                 shoppingAdapter.notifyDataSetChanged();
-            }else{  //为空
-                Log.e("TAG", "onReceive: 无" );
+            } else {  //为空
+                Log.e("TAG", "onReceive: 无");
             }
         }
     };
@@ -177,10 +214,10 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     //TODO 修改购物车的返回
     @Override
     public void postUpdateShoppingCarReturn(UpdateShoppingCarBean updateShoppingCarBean) {
-        Log.i("TAG",updateShoppingCarBean.toString());
+        Log.i("TAG", updateShoppingCarBean.toString());
 
-        for(UpdateShoppingCarBean.DataBean.CartListBean item:updateShoppingCarBean.getData().getCartList()){
-            updateCartListBeanNumberById(item.getId(),item.getNumber());
+        for (UpdateShoppingCarBean.DataBean.CartListBean item : updateShoppingCarBean.getData().getCartList()) {
+            updateCartListBeanNumberById(item.getId(), item.getNumber());
         }
 
         //更新商品的总数和总价
@@ -191,10 +228,10 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     }
 
     //TODO 刷新购物车列表的数据
-    private void updateCartListBeanNumberById(int carId,int number){
-        for(ShoppingCarBean.DataBean.CartListBean item:list){
+    private void updateCartListBeanNumberById(int carId, int number) {
+        for (ShoppingCarBean.DataBean.CartListBean item : list) {
             //找到修改的ID和集合中的ID
-            if(item.getId() == carId){
+            if (item.getId() == carId) {
                 //修改数量
                 item.setNumber(number);
                 break;
@@ -204,16 +241,16 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
 
     @Override
     public void postDeleteShoppingCarReturn(DeleteShoppingCarBean deleteShoppingCarBean) {
-        Log.i("TAG","deleteCar:"+deleteShoppingCarBean.toString());
+        Log.i("TAG", "deleteCar:" + deleteShoppingCarBean.toString());
         //通过购物车返回的最新数据，同步本地列表中的数据
-        int index,lg=list.size();
+        int index, lg = list.size();
 
         //通过index向集合长度判断
-        for(index=0;index<lg; index++){
+        for (index = 0; index < lg; index++) {
             ShoppingCarBean.DataBean.CartListBean item = list.get(index);
-            boolean bool = deleteCarListById(deleteShoppingCarBean.getData().getCartList(),item.getId());
-            Log.i("TAG","delete bool:"+bool +" item:"+item.getId());
-            if(bool){
+            boolean bool = deleteCarListById(deleteShoppingCarBean.getData().getCartList(), item.getId());
+            Log.i("TAG", "delete bool:" + bool + " item:" + item.getId());
+            if (bool) {
                 list.remove(index);//删除集合
                 index--;//对应的下标减1
                 lg--;//集合长度减-1
@@ -225,9 +262,9 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     }
 
     //TODO 判断当前的本地列表的购物车列表数据是否在返回的最新列表中存在
-    private boolean deleteCarListById(List<DeleteShoppingCarBean.DataBean.CartListBean> list ,int carId){
-        for(DeleteShoppingCarBean.DataBean.CartListBean item:list){
-            if(item.getId() == carId){//如果有 删除失败
+    private boolean deleteCarListById(List<DeleteShoppingCarBean.DataBean.CartListBean> list, int carId) {
+        for (DeleteShoppingCarBean.DataBean.CartListBean item : list) {
+            if (item.getId() == carId) {//如果有 删除失败
                 return false;
             }
         }
@@ -239,29 +276,8 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     public void postAddShoppingCarReturn(AddShoppingCarBean rsult) {
 
     }
-    //TODO 点击事件
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_Shopping_Car_edit://点击编辑
-                changeEdit();
-                break;
 
-            case R.id.tv_Shopping_Car_submit://点击下单
-                submit();
-                break;
 
-            case R.id.cb_Shopping_car_all:
-                Log.i("TAG", "checkboxall");
-                boolean bool = cb_All.isChecked();
-                if (isEdit) {
-                    updateGoodSelectStateEdit(!bool);
-                } else {
-                    updateGoodSelectStateOrder(!bool);
-                }
-                break;
-        }
-    }
     //TODO 下单状态的数据刷新
     private void updateGoodSelectStateOrder(boolean isChecked) {
         for (ShoppingCarBean.DataBean.CartListBean item : shoppingCarBean.getData().getCartList()) {
@@ -334,16 +350,14 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
         if ("编辑".equals(tv_Edit.getText().toString())) {
             tv_Edit.setText("完成");
             tv_Submit.setText("删除所选");
-
             isEdit = true;//是编辑状态
             tv_Price.setVisibility(View.GONE);
-            //updateGoodSelectStateOrder(false);
+            updateGoodSelectStateOrder(false);
         } else if ("完成".equals(tv_Edit.getText().toString())) {
             tv_Edit.setText("编辑");
             tv_Submit.setText("下单");
-
             isEdit = false;//不是编辑状态
-            updateGoodSelectStateEdit(false);
+            //updateGoodSelectStateEdit(false);
             //价格进行隐藏
             tv_Price.setVisibility(View.VISIBLE);
         }
@@ -355,6 +369,9 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     private void submit() {
         if ("下单".equals(tv_Submit.getText().toString())) {
             //下单
+            Intent intent = new Intent(getActivity(),OrderFormActivity.class);
+            MyApp.getMap().put("shoppinglist",list);
+            startActivity(intent);
 
         } else if ("删除所选".equals(tv_Submit.getText().toString())) {
             //删除购物车所选数据
@@ -363,18 +380,18 @@ public class ShopFragment extends BaseFragment<IShoppingCar.Presenter> implement
     }
 
     //TODO 删除所有选中的商品数据
-    private void deleteCar(){
+    private void deleteCar() {
         StringBuilder sb = new StringBuilder();
-        for(ShoppingCarBean.DataBean.CartListBean item:list){
-            if(item.selectEdit){
+        for (ShoppingCarBean.DataBean.CartListBean item : list) {
+            if (item.selectEdit) {
                 sb.append(item.getProduct_id());
                 sb.append(",");
             }
         }
-        if(sb.length() > 0){
-            sb.deleteCharAt(sb.length()-1);
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
         }
-        Log.i("TAG",sb.toString());
+        Log.i("TAG", sb.toString());
         presenter.postDeleteShoppingCar(sb.toString());
     }
 
