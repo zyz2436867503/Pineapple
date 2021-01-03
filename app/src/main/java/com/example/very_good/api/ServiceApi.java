@@ -12,6 +12,7 @@ import com.example.very_good.bean.ChannelBean;
 import com.example.very_good.bean.NewListBean;
 import com.example.very_good.bean.NewTopBean;
 import com.example.very_good.bean.address.AddressCityBean;
+import com.example.very_good.bean.app.AppBean;
 import com.example.very_good.bean.login.LoginBean;
 import com.example.very_good.bean.mine.UserInfoBean;
 import com.example.very_good.bean.register.RegisterBean;
@@ -148,5 +149,9 @@ public interface ServiceApi {
     //获取地址
     @GET("api/region/list")
     Flowable<AddressCityBean> getAddressCity(@Query("parentId") int parentId);
+
+    //版本更新
+    @GET("api/apk/appinfo")
+    Flowable<AppBean> getAppInfo();
 
 }

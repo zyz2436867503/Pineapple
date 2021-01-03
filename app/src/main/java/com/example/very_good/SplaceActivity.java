@@ -1,6 +1,7 @@
 package com.example.very_good;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -9,6 +10,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,10 +20,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.very_good.app.Constants;
+import com.example.very_good.app.MyApp;
 import com.example.very_good.base.BaseActivity;
+import com.example.very_good.bean.app.AppBean;
 import com.example.very_good.interfaces.IBasePresenter;
 import com.example.very_good.ui.start.SplaceFragment;
+import com.example.very_good.utils.DownUtils;
+import com.example.very_good.utils.SystemUtils;
+import com.luck.picture.lib.tools.ToastUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -47,6 +57,7 @@ public class SplaceActivity extends BaseActivity {
     ImageView img_3_select;
 
     List<SplaceFragment> list;
+    private boolean isUpdate;
     @Override
     protected int getLayout() {
         return R.layout.activity_splace;
@@ -95,6 +106,8 @@ public class SplaceActivity extends BaseActivity {
 
             }
         });
+       /* //获取最新的版本信息
+        presenter.getAppInfo();*/
     }
     private void resetDots(){
         img_1_normal.setVisibility(View.VISIBLE);
@@ -104,6 +117,65 @@ public class SplaceActivity extends BaseActivity {
         img_2_select.setVisibility(View.GONE);
         img_3_select.setVisibility(View.GONE);
     }
+
+  /*  *//**
+     * 版本信息
+     * @param appBean
+     *//*
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    @Override
+    public void getAppInfoReturn(AppBean appBean) {
+        long versionCode = SystemUtils.getApkVersionCodeByPg(MyApp.app,appBean.getData().get(0).getPg());
+        if(versionCode == -1){
+            ToastUtils.s(this,"未找到对应的apk");
+        }else{
+            if(versionCode < appBean.getData().get(0).getVcode()){
+                //下载更新apk
+                isUpdate = true;
+                list.get(2).isUpdate = true; //当前需要更新新版本
+                downApk(appBean);
+            }else{
+
+            }
+        }
+
+    }
+*/
+  /*  @RequiresApi(api = Build.VERSION_CODES.R)
+    private void downApk(AppBean appBean){
+        String apkPath = Constants.APK_PATH+appBean.getData().get(0).getName();
+        File file = new File(apkPath);
+        try{
+            if(!file.exists()){
+                file.createNewFile();
+            }
+            DownUtils.downApk(appBean.getData().get(0).getUrl(), apkPath, new DownUtils.Callback() {
+                @Override
+                public void success() {
+                    //安装apk
+                    SystemUtils.installNewApk(apkPath);
+                }
+
+                @Override
+                public void progress(String loading) {
+                    txtLoading.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            txtLoading.setText(loading);
+                        }
+                    });
+                }
+
+                @Override
+                public void fail(String err) {
+
+                }
+            });
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }*/
 
     class MyViewPagerAdapter extends FragmentPagerAdapter {
 
